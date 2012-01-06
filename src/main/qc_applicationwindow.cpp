@@ -444,22 +444,38 @@ void QC_ApplicationWindow::show() {
         }
 #endif
 
+#ifdef QC_DELAYED_SPLASH_SCREEN
+    /**
+     *  By calling the timer and then immediately calling QMainWindow::show()
+     *  we can make sure that the timer won't fire before QMainWindow::show()
+     *  finishes, because QMainWindow::show() blocks and QTimer needs to get
+     *  through processEvents.
+     *  However, the timer itself runs in its own thread and will fire after
+     *  the specified amount of time.
+     *
+     *  Doing this, we achieve that the splashscreen will be automatically
+     *  closed after the specified amount of time but not before QMainWindow::show()
+     *  finishes.
+     *  The user manually closing the splash screen by clicking on it is not
+     *  affected by this.
+     *  --LE
+     */
+    QTimer::singleShot(1000*QC_DELAYED_SPLASH_SCREEN_DELAY_SECS, this, SLOT(finishSplashScreen()));
+#endif
+
     QMainWindow::show();
 #ifdef QSPLASHSCREEN_H
     if (splash) {
         splash->raise();
         qApp->processEvents();
         splash->clearMessage();
-# ifdef QC_DELAYED_SPLASH_SCREEN
-        QTimer::singleShot(1000*2, this, SLOT(finishSplashScreen()));
-# else
+
+# ifndef QC_DELAYED_SPLASH_SCREEN
         finishSplashScreen();
 # endif
     }
 #endif
 }
-
-
 
 /**
  * Called when the splash screen has to terminate.

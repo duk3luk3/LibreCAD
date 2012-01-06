@@ -189,7 +189,20 @@ int main(int argc, char** argv) {
         RS_DEBUG->print("main: loading translation: OK");
 
 #ifdef QSPLASHSCREEN_H
-        splash = new QSplashScreen(*pixmap);
+        /**
+         *
+         *  Effect of Qt::WindowStaysOnTopHint is dependent on OS/window
+         *  manager support.
+         *  This might be the reason why the original developer
+         *  opted not to use it but call splash->raise() just about
+         *  everywhere instead.
+         *  So consider this with care.
+         *  --LE
+          **/
+        splash = new QSplashScreen(*pixmap, Qt::WindowStaysOnTopHint);
+
+        //FIXME: After testing is done, either reinstate this or get rid of all splash->raise() calls --LE
+        //splash = new QSplashScreen(*pixmap);
         splash->show();
         splash->showMessage(QObject::tr("Loading.."),
                 Qt::AlignRight|Qt::AlignBottom, QC_SPLASH_TXTCOL);
@@ -252,8 +265,9 @@ int main(int argc, char** argv) {
                 splash->finish(appWin);
                 delete splash;
                 splash = 0;
-        }
+                }
 # endif
+
         delete pixmap;
 #endif
 
@@ -266,6 +280,14 @@ int main(int argc, char** argv) {
         }
 
         appWin->slotRunStartScript();
+
+        /*
+#ifdef QSPLASHSCREEN_H
+        if (splash) {
+            splash->raise();
+        }
+#endif
+*/
 
         int r = app.exec();
 

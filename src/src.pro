@@ -7,6 +7,7 @@ DEFINES += QC_COMPANYNAME="\"LibreCAD\""
 DEFINES += QC_COMPANYKEY="\"LibreCAD\""
 DEFINES += QC_VERSION="\"master\""
 DEFINES += QC_DELAYED_SPLASH_SCREEN=1
+DEFINES += QC_DELAYED_SPLASH_SCREEN_DELAY_SECS=2
 #uncomment to use 2D rs_vector instead of 3D
 #DEFINES += RS_VECTOR2D=1
 
@@ -67,7 +68,7 @@ unix {
 #    CONFIG += link_pkgconfig
 #    PKGCONFIG += boost
 #
-        QMAKE_POST_LINK = cd .. && scripts/postprocess-unix.sh
+        QMAKE_POST_LINK = ../scripts/postprocess-unix.sh
     }
 }
 win32 {
