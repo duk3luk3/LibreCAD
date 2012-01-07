@@ -68,7 +68,7 @@ unix {
 #    CONFIG += link_pkgconfig
 #    PKGCONFIG += boost
 #
-        QMAKE_POST_LINK = ../scripts/postprocess-unix.sh
+        QMAKE_POST_LINK = cd .. && scripts/postprocess-unix.sh
     }
 }
 win32 {
