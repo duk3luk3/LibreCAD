@@ -463,7 +463,6 @@ void QC_ApplicationWindow::show() {
     QTimer::singleShot(1000*QC_DELAYED_SPLASH_SCREEN_DELAY_SECS, this, SLOT(finishSplashScreen()));
 #endif
 
-    QMainWindow::show();
 #ifdef QSPLASHSCREEN_H
     if (splash) {
         splash->raise();
@@ -471,6 +470,7 @@ void QC_ApplicationWindow::show() {
         splash->clearMessage();
 
 # ifndef QC_DELAYED_SPLASH_SCREEN
+        QMainWindow::show();
         finishSplashScreen();
 # endif
     }

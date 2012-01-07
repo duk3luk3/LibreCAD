@@ -223,8 +223,9 @@ int main(int argc, char** argv) {
     appWin->setWindowTitle(XSTR(QC_APPNAME));
         RS_DEBUG->print("main: show main window");
     appWin->show();
-        RS_DEBUG->print("main: set focus");
-        appWin->setFocus();
+    appWin->lower();
+//        RS_DEBUG->print("main: set focus");
+//        appWin->setFocus();
         RS_DEBUG->print("main: creating main window: OK");
 
 #ifdef QSPLASHSCREEN_H
@@ -262,11 +263,15 @@ int main(int argc, char** argv) {
 #ifdef QSPLASHSCREEN_H
 # ifndef QC_DELAYED_SPLASH_SCREEN
         if (splash) {
-                splash->finish(appWin);
-                delete splash;
-                splash = 0;
-                }
+            splash->finish(appWin);
+            delete splash;
+            splash = 0;
+        }else{
+            appWin->raise();
+            appWin->setFocus();
+        }
 # endif
+
 
         delete pixmap;
 #endif
