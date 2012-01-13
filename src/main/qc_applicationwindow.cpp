@@ -519,13 +519,16 @@ void QC_ApplicationWindow::closeEvent(QCloseEvent* ce) {
     if (!queryExit(false)) {
         ce->ignore();
     }
-    if(mdiAreaCAD!=NULL){
-        mdiAreaCAD->closeAllSubWindows();
-    }
-    if (mdiAreaCAD->currentSubWindow()) {
-        ce->ignore();
-    } else {
-        ce->accept();
+    else
+    {
+        if(mdiAreaCAD!=NULL){
+            mdiAreaCAD->closeAllSubWindows();
+        }
+        if (mdiAreaCAD->currentSubWindow()) {
+            ce->ignore();
+        } else {
+            ce->accept();
+        }
     }
 //we shouldn't need this; saving should be done within ~QG_SnapToolBar()
     //snapToolBar->saveSnapMode();
@@ -1569,6 +1572,8 @@ void QC_ApplicationWindow::initToolBar() {
     snapToolBar = new QG_SnapToolBar("Snap Selection",actionHandler, this);
     snapToolBar->setSizePolicy(toolBarPolicy);
     snapToolBar->setObjectName ( "SnapTB" );
+
+    connect(this, SIGNAL(windowsChanged(bool)), snapToolBar, SLOT(setEnabled(bool)));
     //connect(snapToolBar, SIGNAL(snapsChanged(RS_SnapMode)),
     //        this, SLOT(slotSnapsChanged(RS_SnapMode)));
     this->addToolBar(snapToolBar);
@@ -3210,7 +3215,7 @@ void QC_ApplicationWindow::slotFilePrintPreview(bool on) {
 
                 RS_DEBUG->print("  showing MDI window");
 
-                if (mdiAreaCAD->subWindowList().isEmpty()) {
+                if (mdiAreaCAD->subWindowList().size() <= 1 ) {
                     w->showMaximized();
                 } else {
                     w->show();
@@ -3220,7 +3225,6 @@ void QC_ApplicationWindow::slotFilePrintPreview(bool on) {
                     graphic->fitToPage();
                 }
 //                w->getGraphicView()->zoomPage();
-                showMaximized();
                 setFocus();
 
 //                slotWindowActivated(subWindow);
